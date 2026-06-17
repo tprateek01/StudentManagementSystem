@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using StudentManagementSystem.Data; // Added for ApplicationDbContext
+using StudentManagementSystem.Data;
 using StudentManagementSystem.Models;
+using System.Collections.Generic; // CRITICAL: Added for List<> to avoid compiler errors!
 using System.Diagnostics;
-using System.Linq; // Added for .Any()
+using System.Linq;
 
 namespace StudentManagementSystem.Controllers
 {
@@ -10,7 +11,6 @@ namespace StudentManagementSystem.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        // Constructor injection to access your live Render database
         public HomeController(ApplicationDbContext context)
         {
             _context = context;
@@ -21,11 +21,33 @@ namespace StudentManagementSystem.Controllers
             return View();
         }
 
-        // Fresh standalone URL route to insert your admin record manually
+        // Single execution link to populate your live cloud database completely
         public string CreateAdminAccount()
         {
-            var exists = _context.tblStudent.Any(u => u.Username == "tprateek01");
-            if (!exists)
+            System.Text.StringBuilder statusMessage = new System.Text.StringBuilder();
+
+            // 1. Seed Departments if they are currently missing
+            if (!_context.tblDepartment.Any())
+            {
+                var departments = new List<Department>
+                {
+                    new Department { DepartmentName = "Computer Science" },
+                    new Department { DepartmentName = "Information Technology" },
+                    new Department { DepartmentName = "Electronics Engineering" },
+                    new Department { DepartmentName = "Mechanical Engineering" }
+                };
+                _context.tblDepartment.AddRange(departments);
+                _context.SaveChanges();
+                statusMessage.AppendLine("Departments populated successfully! | ");
+            }
+            else
+            {
+                statusMessage.AppendLine("Departments already exist. | ");
+            }
+
+            // 2. Seed Admin Account if it doesn't exist
+            var adminExists = _context.tblStudent.Any(u => u.Username == "tprateek01");
+            if (!adminExists)
             {
                 var admin = new Student
                 {
@@ -37,9 +59,14 @@ namespace StudentManagementSystem.Controllers
 
                 _context.tblStudent.Add(admin);
                 _context.SaveChanges();
-                return "Admin account 'tprateek01' with password 'admin123' created successfully!";
+                statusMessage.AppendLine("Admin account 'tprateek01' created successfully!");
             }
-            return "Admin account already exists in database.";
+            else
+            {
+                statusMessage.AppendLine("Admin account already exists.");
+            }
+
+            return statusMessage.ToString();
         }
 
         public IActionResult Privacy()
