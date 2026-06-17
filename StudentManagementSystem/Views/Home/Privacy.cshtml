@@ -1,6 +1,36 @@
 ﻿@{
     ViewData["Title"] = "Privacy Policy";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<div class="container mt-5">
+    <div class="card shadow-sm border-0 p-4">
+        <h1 class="text-primary mb-3">
+            <i class="bi bi-shield-lock-fill"></i> @ViewData["Title"]
+        </h1>
+        <p class="text-muted">Last updated: June 17, 2026</p>
+        <hr />
+
+        <div class="card-body px-0">
+            <section class="mb-4">
+                <h4 class="text-secondary"><i class="bi bi-file-earmark-text"></i> 1. Information We Collect</h4>
+                <p class="text-dark" style="line-height: 1.6;">
+                    The Student Management System processes academic profiles, department classifications, registration records, and login session authentication keys strictly for institutional evaluation, grade management, and administrative purposes.
+                </p>
+            </section>
+
+            <section class="mb-4">
+                <h4 class="text-secondary"><i class="bi bi-lock-fill"></i> 2. Data Security & Encryption</h4>
+                <p class="text-dark" style="line-height: 1.6;">
+                    All sensitive authentication credentials and user passwords are protected utilizing advanced, cryptographically secure one-way <strong>BCrypt hashing algorithms</strong> before being committed to our cloud database layer hosted on Render.
+                </p>
+            </section>
+
+            <section class="mb-4">
+                <h4 class="text-secondary"><i class="bi bi-cookie"></i> 3. Session Management</h4>
+                <p class="text-dark" style="line-height: 1.6;">
+                    This application utilizes stateful server-side <code>HttpContext</code> Sessions to securely segregate access levels, ensuring standard student accounts are isolated from administrative control panel functionalities.
+                </p>
+            </section>
+        </div>
+    </div>
+</div>

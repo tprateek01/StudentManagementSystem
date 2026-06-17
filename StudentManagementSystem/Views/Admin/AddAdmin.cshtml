@@ -1,0 +1,41 @@
+﻿@model StudentManagementSystem.Models.Student
+
+@{
+    ViewData["Title"] = "Add New System Administrator";
+}
+
+<div class="container mt-5" style="max-width: 500px;">
+    <div class="card shadow border-0">
+        <div class="card-header bg-primary text-white text-center">
+            <h4><i class="bi bi-person-plus-fill"></i> Add New Admin</h4>
+        </div>
+        <div class="card-body p-4">
+            <form asp-action="AddAdmin" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label font-weight-bold">Full Name</label>
+                    <input asp-for="Name" class="form-control" placeholder="Enter admin full name" required />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Username" class="form-label font-weight-bold">Username ID</label>
+                    <input asp-for="Username" class="form-control" placeholder="Create admin username" required />
+                    <span asp-validation-for="Username" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label font-weight-bold">Password</label>
+                    <input asp-for="Password" type="password" class="form-control" placeholder="Assign secure password" required />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary btn-block">Register Admin Account</button>
+                    <a asp-action="ViewAdmins" class="btn btn-outline-secondary btn-block">Cancel and Return</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -107,6 +107,48 @@ namespace StudentManagementSystem.Controllers
             return View(admins);
         }
 
+        // GET: Admin/AddAdmin
+        [HttpGet]
+        public IActionResult AddAdmin()
+        {
+            // Authorization Guard: Strict restriction to active admin sessions only
+            if (HttpContext.Session.GetString("UserRole") != "Admin")
+                return RedirectToAction("Login", "Account");
+
+            return View();
+        }
+
+        // POST: Admin/AddAdmin
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddAdmin(Student model)
+        {
+            if (HttpContext.Session.GetString("UserRole") != "Admin")
+                return RedirectToAction("Login", "Account");
+
+            // Check if username parameter duplicates any existing system index
+            if (_context.tblStudent.Any(u => u.Username == model.Username))
+            {
+                ModelState.AddModelError("Username", "This username is already taken.");
+            }
+
+            if (ModelState.IsValid)
+            {
+                // Explicitly set the authorization role clearance level to Admin
+                model.Role = "Admin";
+
+                // Process safe BCrypt cryptographic hashing for storage matching AccountController specifications
+                model.Password = BCrypt.Net.BCrypt.HashPassword(model.Password);
+
+                _context.tblStudent.Add(model);
+                _context.SaveChanges();
+
+                return RedirectToAction("ViewAdmins");
+            }
+
+            return View(model);
+        }
+
         // GET: Admin/ManageDepartments
         public IActionResult ManageDepartments()
         {
