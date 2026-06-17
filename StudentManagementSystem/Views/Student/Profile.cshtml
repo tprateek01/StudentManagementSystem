@@ -1,0 +1,101 @@
+﻿@model StudentManagementSystem.Models.Student
+
+<div class="container mt-5" style="max-width: 700px;">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+            <strong>Success!</strong> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card shadow border-0">
+        <div class="card-header bg-dark text-white p-4 d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="mb-0 fw-bold">Welcome, @Model.Name</h4>
+                <small class="text-muted">Role: Student Portal Account</small>
+            </div>
+            <button type="button" id="toggleEditBtn" class="btn btn-sm btn-outline-warning fw-bold px-3 py-2 btn-hover-action" onclick="enableProfileEditingMode()">Edit Profile</button>
+        </div>
+        <div class="card-body p-4">
+            <form method="post" action="@Url.Action("UpdateProfile", "Student")">
+                @Html.AntiForgeryToken()
+
+                <!-- Academic Performance Matrix Block -->
+                <h5 class="text-secondary border-bottom pb-2 mb-3 fw-bold">Academic Performance Matrix</h5>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold text-muted">Course Branch</label>
+                        <div class="view-mode-text py-2 px-3 bg-light rounded border">@(string.IsNullOrEmpty(Model.Course) ? "N/A" : Model.Course)</div>
+                        <input type="text" name="Course" value="@Model.Course" class="form-control edit-mode-input d-none" placeholder="e.g. B.Tech CS" required />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold text-muted">Current Semester</label>
+                        <div class="view-mode-text py-2 px-3 bg-light rounded border">@(Model.Semester?.ToString() ?? "N/A")</div>
+                        <input type="number" name="Semester" value="@Model.Semester" class="form-control edit-mode-input d-none" placeholder="e.g. 8" min="1" max="8" required />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold text-muted">Current CGPA</label>
+                        <div class="view-mode-text py-2 px-3 bg-light rounded border">@(Model.CGPA?.ToString("0.00") ?? "N/A")</div>
+                        <input type="number" name="CGPA" value="@Model.CGPA" step="0.01" min="0" max="10" class="form-control edit-mode-input d-none" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold text-muted">Current SGPA</label>
+                        <div class="view-mode-text py-2 px-3 bg-light rounded border">@(Model.SGPA?.ToString("0.00") ?? "N/A")</div>
+                        <input type="number" name="SGPA" value="@Model.SGPA" step="0.01" min="0" max="10" class="form-control edit-mode-input d-none" />
+                    </div>
+                </div>
+
+                <!-- Comprehensive Demographic Block -->
+                <h5 class="text-secondary border-bottom pb-2 mt-4 mb-3 fw-bold">Account Demographics</h5>
+                <div class="row bg-light p-3 rounded mx-0 border g-3 text-dark">
+                    <div class="col-md-6"><strong>Username Account:</strong> <span class="ms-1 text-muted">@Model.Username</span></div>
+                    <div class="col-md-6"><strong>Registered Mobile:</strong> <span class="ms-1 text-muted">@(Model.Mobile ?? "N/A")</span></div>
+                    <div class="col-md-6"><strong>Origin Hometown:</strong> <span class="ms-1 text-muted">@(Model.Hometown ?? "N/A")</span></div>
+                    <div class="col-md-6"><strong>Date of Birth:</strong> <span class="ms-1 text-muted">@(Model.DOB?.ToString("dd-MM-yyyy") ?? "N/A")</span></div>
+                </div>
+
+                <!-- Hidden Form Actions Footer -->
+                <div id="formActionFooter" class="d-none mt-4 row g-2">
+                    <div class="col-6">
+                        <button type="submit" class="btn btn-success w-100 py-2 fw-bold btn-hover-action">Save Profile Updates</button>
+                    </div>
+                    <div class="col-6">
+                        <button type="button" class="btn btn-secondary w-100 py-2" onclick="window.location.reload();">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .btn-hover-action {
+        transition: all 0.3s ease;
+    }
+
+        .btn-hover-action:hover {
+            cursor: pointer;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+</style>
+
+<script>
+    function enableProfileEditingMode() {
+        // 1. Hide the static placeholder text views
+        document.querySelectorAll('.view-mode-text').forEach(element => element.classList.add('d-none'));
+
+        // 2. Unhide the editable input elements
+        document.querySelectorAll('.edit-mode-input').forEach(element => element.classList.remove('d-none'));
+
+        // 3. Reveal the Save/Cancel button footer block
+        document.getElementById('formActionFooter').classList.remove('d-none');
+
+        // 4. Hide the primary edit action trigger itself
+        document.getElementById('toggleEditBtn').classList.add('d-none');
+    }
+</script>

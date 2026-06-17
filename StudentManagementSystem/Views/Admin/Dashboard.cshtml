@@ -1,0 +1,97 @@
+﻿@model IEnumerable<StudentManagementSystem.Models.Student>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-end gap-2 mb-4">
+        <a href="@Url.Action("ManageDepartments", "Admin")" class="btn btn-outline-dark fw-bold shadow-sm">
+            Manage Departments
+        </a>
+        <a href="@Url.Action("ViewAdmins", "Admin")" class="btn btn-outline-secondary fw-bold shadow-sm">
+            View Registered Admins
+        </a>
+    </div>
+
+    <div class="row text-center mb-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white p-3 shadow-sm">
+                <h3>@ViewBag.TotalStudents</h3>
+                <p class="mb-0">Total Students</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white p-3 shadow-sm">
+                <h3>@ViewBag.TotalDepartments</h3>
+                <p class="mb-0">Total Departments</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-info text-white p-3 shadow-sm">
+                <h3>@ViewBag.AvgCgpa.ToString("0.00")</h3>
+                <p class="mb-0">Average CGPA</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Search & Filter Students</h5>
+        </div>
+        <div class="card-body">
+            <form method="get" action="@Url.Action("Dashboard", "Admin")" class="row g-3">
+                <div class="col-md-5">
+                    <input type="text" name="searchString" class="form-control" placeholder="Search by Username..." />
+                </div>
+                <div class="col-md-5">
+                    <input type="text" name="deptSearch" class="form-control" placeholder="Search by Department..." />
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Search</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-secondary text-white">
+            <h5 class="mb-0">Registered Students List</h5>
+        </div>
+        <table class="table table-striped mb-0 align-middle">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Department</th>
+                    <th>CGPA</th>
+                    <th>SGPA</th>
+                    <th class="text-center" style="width: 220px;">System Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            No student records matching criteria found.
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var student in Model)
+                    {
+                        <tr>
+                            <td>@student.Name</td>
+                            <td>@student.Username</td>
+                            <td>@(student.Department?.DepartmentName ?? "N/A")</td>
+                            <td>@student.CGPA</td>
+                            <td>@student.SGPA</td>
+                            <td class="text-center">
+                                <a href="@Url.Action("EditStudent", "Admin", new { id = student.Id })" class="btn btn-sm btn-warning fw-bold px-3">Modify</a>
+                                <a href="@Url.Action("DeleteStudent", "Admin", new { id = student.Id })" class="btn btn-sm btn-danger fw-bold px-3 ms-1" onclick="return confirm('Are you sure you want to delete this student record permanently?');">Remove</a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
